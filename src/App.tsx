@@ -1,7 +1,6 @@
 import { useState, ChangeEvent } from 'react'
 import './App.css'
 import FullscreenReader from './components/FullscreenReader'
-import ImageListView from './components/ImageListView'
 
 interface ImageFile {
   name: string;
@@ -12,7 +11,6 @@ interface ImageFile {
 function App() {
   const [images, setImages] = useState<ImageFile[]>([]);
   const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null);
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
 
   const handleFolderSelect = async (e: ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -44,41 +42,20 @@ function App() {
           multiple
           onChange={handleFolderSelect}
         />
-        <div className="view-toggle">
-          <button 
-            className={viewMode === 'grid' ? 'active' : ''}
-            onClick={() => setViewMode('grid')}
-          >
-            网格视图
-          </button>
-          <button 
-            className={viewMode === 'list' ? 'active' : ''}
-            onClick={() => setViewMode('list')}
-          >
-            列表视图
-          </button>
-        </div>
       </div>
       
-      {viewMode === 'grid' ? (
-        <div className="image-grid">
-          {images.map((image, index) => (
-            <div
-              key={image.url}
-              className="image-item"
-              onClick={() => setSelectedImageIndex(index)}
-            >
-              <img src={image.url} alt={image.name} />
-              <div className="image-name">{image.name}</div>
-            </div>
-          ))}
-        </div>
-      ) : (
-        <ImageListView 
-          images={images} 
-          onImageClick={(index) => setSelectedImageIndex(index)} 
-        />
-      )}
+      <div className="image-grid">
+        {images.map((image, index) => (
+          <div
+            key={image.url}
+            className="image-item"
+            onClick={() => setSelectedImageIndex(index)}
+          >
+            <img src={image.url} alt={image.name} />
+            <div className="image-name">{image.name}</div>
+          </div>
+        ))}
+      </div>
       
       {selectedImageIndex !== null && (
         <FullscreenReader
