@@ -27,7 +27,7 @@ function App() {
           url: url,
           size: file.size
         };
-        
+
         // 获取图片的宽度和高度
         const img = new Image();
         img.onload = () => {
@@ -37,7 +37,7 @@ function App() {
           setImages(prev => [...prev]);
         };
         img.src = url;
-        
+
         imageFiles.push(imageFile);
       }
     }
@@ -51,14 +51,16 @@ function App() {
     <div className="app">
       <div className="toolbar">
         <input
-          type="file"
-          webkitdirectory=""
-          directory=""
-          multiple
-          onChange={handleFolderSelect}
+          {...{
+            type: "file",
+            webkitdirectory: "",
+            directory: "",
+            multiple: true,
+            onChange: handleFolderSelect
+          } as React.InputHTMLAttributes<HTMLInputElement>}
         />
       </div>
-      
+
       <div className="image-grid">
         {images.map((image, index) => (
           <div
@@ -71,7 +73,7 @@ function App() {
           </div>
         ))}
       </div>
-      
+
       {selectedImageIndex !== null && (
         <FullscreenReader
           images={images}
