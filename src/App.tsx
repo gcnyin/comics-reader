@@ -5,7 +5,9 @@ import FullscreenReader from './components/FullscreenReader'
 interface ImageFile {
   name: string;
   url: string;
-  size?: number;
+  size: number;
+  width?: number;
+  height?: number;
 }
 
 function App() {
@@ -19,11 +21,24 @@ function App() {
     const imageFiles: ImageFile[] = [];
     for (const file of files) {
       if (file.type.startsWith('image/')) {
-        imageFiles.push({
+        const url = URL.createObjectURL(file);
+        const imageFile: ImageFile = {
           name: file.name,
-          url: URL.createObjectURL(file),
+          url: url,
           size: file.size
-        });
+        };
+        
+        // 获取图片的宽度和高度
+        const img = new Image();
+        img.onload = () => {
+          imageFile.width = img.width;
+          imageFile.height = img.height;
+          // 强制更新状态以反映新的宽高信息
+          setImages(prev => [...prev]);
+        };
+        img.src = url;
+        
+        imageFiles.push(imageFile);
       }
     }
 

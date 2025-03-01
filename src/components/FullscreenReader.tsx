@@ -2,7 +2,7 @@ import { useEffect, useState, useCallback } from 'react';
 import '../styles/FullscreenReader.css';
 
 interface FullscreenReaderProps {
-  images: Array<{ name: string; url: string }>;
+  images: Array<{ name: string; url: string; size: number; width?: number; height?: number }>;
   initialIndex: number;
   onClose: () => void;
 }
@@ -10,9 +10,7 @@ interface FullscreenReaderProps {
 export default function FullscreenReader({ images, initialIndex, onClose }: FullscreenReaderProps) {
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
   const [scale, setScale] = useState(1);
-  const [position, setPosition] = useState({ x: 0, y: 0 });
-  const [isDragging, setIsDragging] = useState(false);
-  const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+
   const [isControlsVisible, setIsControlsVisible] = useState(true);
   
   // 处理鼠标移动和控制栏显示
@@ -71,7 +69,6 @@ export default function FullscreenReader({ images, initialIndex, onClose }: Full
           break;
         case '0':
           setScale(1);
-          setPosition({ x: 0, y: 0 });
           break;
       }
     };
@@ -83,29 +80,9 @@ export default function FullscreenReader({ images, initialIndex, onClose }: Full
   // 重置视图
   const resetView = () => {
     setScale(1);
-    setPosition({ x: 0, y: 0 });
   };
 
-  // 处理鼠标拖动开始
-  const handleMouseDown = (e: React.MouseEvent) => {
-    setIsDragging(true);
-    setDragStart({ x: e.clientX - position.x, y: e.clientY - position.y });
-  };
 
-  // 处理鼠标拖动
-  const handleMouseMove = (e: React.MouseEvent) => {
-    if (isDragging) {
-      setPosition({
-        x: e.clientX - dragStart.x,
-        y: e.clientY - dragStart.y
-      });
-    }
-  };
-
-  // 处理鼠标拖动结束
-  const handleMouseUp = () => {
-    setIsDragging(false);
-  };
 
   // 处理鼠标滚轮缩放
   const handleWheel = (e: React.WheelEvent) => {
@@ -121,9 +98,6 @@ export default function FullscreenReader({ images, initialIndex, onClose }: Full
   return (
     <div 
       className="fullscreen-reader"
-      onMouseMove={handleMouseMove}
-      onMouseUp={handleMouseUp}
-      onMouseLeave={handleMouseUp}
       onWheel={handleWheel}
     >
       <div className={`reader-controls ${isControlsVisible ? 'visible' : 'hidden'}`}>
@@ -145,6 +119,10 @@ export default function FullscreenReader({ images, initialIndex, onClose }: Full
         <button onClick={resetView}>
           重置
         </button>
+        <span className="image-info">
+          {currentImage.width && currentImage.height ? `${currentImage.width}x${currentImage.height}px` : ''}
+          {currentImage.size ? ` | ${(currentImage.size / 1024).toFixed(1)}KB` : ''}
+        </span>
         <button onClick={onClose} className="close-button">
           关闭
         </button>
@@ -155,10 +133,8 @@ export default function FullscreenReader({ images, initialIndex, onClose }: Full
           src={currentImage.url}
           alt={currentImage.name}
           style={{
-            transform: `translate(${position.x}px, ${position.y}px) scale(${scale})`,
-            cursor: isDragging ? 'grabbing' : 'grab'
+            transform: `scale(${scale})`
           }}
-          onMouseDown={handleMouseDown}
           draggable="false"
         />
       </div>
