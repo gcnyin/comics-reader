@@ -1,54 +1,65 @@
-# React + TypeScript + Vite
+# 漫画阅读器 (Comics Reader)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+一个简洁、高效的漫画阅读应用，使用React、TypeScript和Vite构建。支持本地文件夹浏览、全屏阅读和键盘导航等功能。
 
-Currently, two official plugins are available:
+A simple and efficient comic reading application built with React, TypeScript, and Vite. Supports local folder browsing, fullscreen reading, and keyboard navigation.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## ✨ 特性 (Features)
 
-## Expanding the ESLint configuration
+- 📁 本地文件浏览 (Local File Browsing)
+  - 支持选择本地文件夹，导入常见图片格式（JPG、PNG等）
+  - 自动按文件名排序，以缩略图网格形式展示
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- 🖼️ 全屏阅读模式 (Fullscreen Reading Mode)
+  - 点击缩略图进入全屏阅读
+  - 支持键盘快捷键导航
+  - 页面切换和缩放控制
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+- 🔍 图片操作 (Image Operations)
+  - 支持图片缩放（0.5x - 3x）
+  - 鼠标滚轮和键盘快捷键控制
+  - 支持图片拖动和位置调整
+
+- ⌨️ 快捷键 (Keyboard Shortcuts)
+  - 左右方向键：切换上一页/下一页
+  - ESC：退出全屏模式
+  - +/-：放大/缩小图片
+  - 0：重置图片大小和位置
+
+## 🚀 开始使用 (Getting Started)
+
+### 安装 (Installation)
+
+```bash
+# 克隆项目
+git clone https://github.com/your-username/comics-reader.git
+
+# 进入项目目录
+cd comics-reader
+
+# 安装依赖
+pnpm install
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### 开发 (Development)
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
+```bash
+pnpm run dev
 ```
+
+### 构建 (Build)
+
+```bash
+pnpm run build
+```
+
+## 🛠️ 技术栈 (Tech Stack)
+
+- React 19
+- TypeScript
+- Vite
+- CSS Modules
+
+## 📝 许可证 (License)
+
+[MIT License](LICENSE)

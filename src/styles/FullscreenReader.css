@@ -1,0 +1,80 @@
+.fullscreen-reader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.9);
+  display: flex;
+  flex-direction: column;
+  z-index: 1000;
+}
+
+.reader-controls {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: 1rem;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  align-items: center;
+  z-index: 1001;
+  transition: opacity 0.3s ease;
+}
+
+.reader-controls.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.reader-controls.visible {
+  opacity: 1;
+}
+
+.reader-controls button {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  background-color: #4a4a4a;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.reader-controls button:hover:not(:disabled) {
+  background-color: #666;
+}
+
+.reader-controls button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.page-info {
+  color: white;
+  margin: 0 1rem;
+}
+
+.close-button {
+  position: absolute;
+  right: 1rem;
+}
+
+.image-container {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.image-container img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  user-select: none;
+  transition: transform 0.1s ease;
+}
