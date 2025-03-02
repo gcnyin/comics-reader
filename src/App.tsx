@@ -2,7 +2,7 @@ import { useState, ChangeEvent, useEffect } from 'react'
 import './App.css'
 import './styles/theme.css'
 import FullscreenReader from './components/FullscreenReader'
-import { MdLightMode, MdDarkMode } from 'react-icons/md'
+import { MdLightMode, MdDarkMode, MdFolder } from 'react-icons/md'
 
 interface ImageFile {
   name: string;
@@ -76,41 +76,60 @@ function App() {
 
   return (
     <div className="app">
-      <footer className="footer">
-        Powered by React
-      </footer>
-      <div className="toolbar">
-        <button
-          className="theme-toggle"
-          onClick={toggleTheme}
-          aria-label="切换主题"
-        >
-          {theme === 'light' ? <MdDarkMode /> : <MdLightMode />}
-          {theme === 'light' ? '深色模式' : '浅色模式'}
-        </button>
-        <input
-          {...{
-            type: "file",
-            webkitdirectory: "",
-            directory: "",
-            multiple: true,
-            onChange: handleFolderSelect
-          } as React.InputHTMLAttributes<HTMLInputElement>}
-        />
-      </div>
-
-      <div className="image-grid">
-        {images.map((image, index) => (
-          <div
-            key={image.url}
-            className="image-item"
-            onClick={() => setSelectedImageIndex(index)}
+      <div className="content-area">
+        <div className="welcome-section">
+          <button
+            className="theme-toggle"
+            onClick={toggleTheme}
+            aria-label="切换主题"
           >
-            <img src={image.url} alt={image.name} />
-            <div className="image-name">{image.name}</div>
+            {theme === 'light' ? <MdDarkMode /> : <MdLightMode />}
+            <span>{theme === 'light' ? '深色模式' : '浅色模式'}</span>
+          </button>
+          <h2>漫画阅读器</h2>
+          <div className="upload-container">
+            <label className="file-upload-button">
+              <MdFolder className="upload-icon" />
+              选择文件夹
+              <input
+                {...{
+                  type: "file",
+                  webkitdirectory: "",
+                  directory: "",
+                  multiple: true,
+                  onChange: handleFolderSelect
+                } as React.InputHTMLAttributes<HTMLInputElement>}
+              />
+            </label>
           </div>
-        ))}
+        </div>
+
+        {images.length > 0 && (
+          <div className="gallery-section">
+            <h3>您的漫画 ({images.length})</h3>
+            <div className="image-grid">
+              {images.map((image, index) => (
+                <div
+                  key={image.url}
+                  className="image-item"
+                  onClick={() => setSelectedImageIndex(index)}
+                >
+                  <div className="image-preview">
+                    <img src={image.url} alt={image.name} />
+                  </div>
+                  <div className="image-name">{image.name}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
+      
+      <footer className="footer">
+        <div className="footer-content">
+          <p>漫画阅读器 &copy; {new Date().getFullYear()} | Powered by React</p>
+        </div>
+      </footer>
 
       {selectedImageIndex !== null && (
         <FullscreenReader

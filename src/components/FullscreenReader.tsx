@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback, MouseEvent } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import '../styles/FullscreenReader.css';
 
 interface FullscreenReaderProps {
@@ -9,12 +9,9 @@ interface FullscreenReaderProps {
 
 export default function FullscreenReader({ images, initialIndex, onClose }: FullscreenReaderProps) {
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
-  const [scale, setScale] = useState(1);
   const [isControlsVisible, setIsControlsVisible] = useState(true);
-  const [isRightToLeft, setIsRightToLeft] = useState(false);
-  const [position, setPosition] = useState({ x: 0, y: 0 });
-  const [isDragging, setIsDragging] = useState(false);
-  const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+  const [rotation, setRotation] = useState(0);
+
   const readerRef = useCallback((node: HTMLDivElement | null) => {
     if (node) {
       node.requestFullscreen().catch(err => {
@@ -22,6 +19,41 @@ export default function FullscreenReader({ images, initialIndex, onClose }: Full
       });
     }
   }, []);
+
+  // 重置视图到初始状态
+  const resetView = useCallback(() => {
+    setRotation(0);
+  }, []);
+
+  // 统一的导航控制器
+  const navigationController = useCallback((action: 'next' | 'prev' | 'reset' | 'close' | 'rotateLeft' | 'rotateRight') => {
+    switch (action) {
+      case 'next':
+        if (currentIndex < images.length - 1) {
+          setCurrentIndex(currentIndex + 1);
+          resetView();
+        }
+        break;
+      case 'prev':
+        if (currentIndex > 0) {
+          setCurrentIndex(currentIndex - 1);
+          resetView();
+        }
+        break;
+      case 'reset':
+        resetView();
+        break;
+      case 'close':
+        onClose();
+        break;
+      case 'rotateLeft':
+        setRotation(prev => (prev - 90) % 360);
+        break;
+      case 'rotateRight':
+        setRotation(prev => (prev + 90) % 360);
+        break;
+    }
+  }, [currentIndex, images.length, onClose, resetView]);
 
   // 处理鼠标移动和控制栏显示
   useEffect(() => {
@@ -42,119 +74,40 @@ export default function FullscreenReader({ images, initialIndex, onClose }: Full
     };
   }, []);
 
-  // 导航到上一张图片
-  const navigatePrev = useCallback(() => {
-    if (currentIndex > 0) {
-      setCurrentIndex(currentIndex - 1);
-      resetView();
-    }
-  }, [currentIndex]);
-
-  // 导航到下一张图片
-  const navigateNext = useCallback(() => {
-    if (currentIndex < images.length - 1) {
-      setCurrentIndex(currentIndex + 1);
-      resetView();
-    }
-  }, [currentIndex, images.length]);
-
-  // 处理键盘事件
-  useEffect(() => {
-    // 退出全屏时同时关闭阅读器
-    const handleFullscreenChange = () => {
-      if (!document.fullscreenElement) {
-        onClose();
-      }
-    };
-    document.addEventListener('fullscreenchange', handleFullscreenChange);
-
-    return () => {
-      document.removeEventListener('fullscreenchange', handleFullscreenChange);
-      if (document.fullscreenElement) {
-        document.exitFullscreen().catch(err => {
-          console.error('Error attempting to exit fullscreen:', err);
-        });
-      }
-    };
-  }, [onClose]);
-
+  // 处理键盘快捷键
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      if (['ArrowLeft', 'ArrowRight'].includes(e.key)) {
+        e.preventDefault();
+      }
+
       switch (e.key) {
-        case 'Escape':
-          onClose();
-          break;
         case 'ArrowLeft':
-          isRightToLeft ? navigateNext() : navigatePrev();
+          navigationController('prev');
           break;
         case 'ArrowRight':
-          isRightToLeft ? navigatePrev() : navigateNext();
-          break;
-        case '+':
-          setScale(prev => Math.min(prev + 0.1, 3));
-          break;
-        case '-':
-          setScale(prev => Math.max(prev - 0.1, 0.5));
+          navigationController('next');
           break;
         case '0':
-          setScale(1);
+          navigationController('reset');
+          break;
+        case 'Escape':
+          navigationController('close');
+          break;
+        case 'r':
+          navigationController('rotateRight');
+          break;
+        case 'l':
+          navigationController('rotateLeft');
           break;
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [currentIndex, onClose, navigatePrev, navigateNext, isRightToLeft]);
-
-  // 重置视图
-  const resetView = () => {
-    setScale(1);
-    setPosition({ x: 0, y: 0 });
-  };
-
-  // 处理鼠标滚轮缩放
-  const handleWheel = (e: React.WheelEvent) => {
-    e.preventDefault();
-    const delta = e.deltaY * -0.01;
-    const newScale = Math.max(0.5, Math.min(scale + delta, 3));
-    setScale(newScale);
-  };
-
-  // 处理鼠标按下事件，开始拖动
-  const handleMouseDown = (e: MouseEvent) => {
-    if (e.button === 0) { // 只响应左键点击
-      setIsDragging(true);
-      setDragStart({ x: e.clientX - position.x, y: e.clientY - position.y });
-    }
-  };
-
-  // 处理鼠标移动事件，计算拖动位置
-  const handleMouseMove = useCallback(
-    (e: globalThis.MouseEvent) => {
-      if (isDragging) {
-        const newX = e.clientX - dragStart.x;
-        const newY = e.clientY - dragStart.y;
-        setPosition({ x: newX, y: newY });
-      }
-    },
-    [isDragging, dragStart]
-  );
-
-  // 处理鼠标释放事件，结束拖动
-  const handleMouseUp = useCallback(() => {
-    setIsDragging(false);
-  }, []);
-
-  // 添加和移除全局鼠标事件监听
-  useEffect(() => {
-    window.addEventListener('mousemove', handleMouseMove);
-    window.addEventListener('mouseup', handleMouseUp);
-    
     return () => {
-      window.removeEventListener('mousemove', handleMouseMove);
-      window.removeEventListener('mouseup', handleMouseUp);
+      window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [handleMouseMove, handleMouseUp]);
+  }, [navigationController]);
 
   // 当前显示的图片
   const currentImage = images[currentIndex];
@@ -163,30 +116,27 @@ export default function FullscreenReader({ images, initialIndex, onClose }: Full
     <div 
       ref={readerRef}
       className="fullscreen-reader"
-      onWheel={handleWheel}
     >
       <div className={`reader-controls ${isControlsVisible ? 'visible' : 'hidden'}`}>
-        <button onClick={isRightToLeft ? navigateNext : navigatePrev} disabled={currentIndex === 0}>
+        <button onClick={() => navigationController('prev')} disabled={currentIndex === 0}>
           上一页
         </button>
         <span className="page-info">
           {currentIndex + 1} / {images.length}
         </span>
-        <button onClick={isRightToLeft ? navigatePrev : navigateNext} disabled={currentIndex === images.length - 1}>
+        <button onClick={() => navigationController('next')} disabled={currentIndex === images.length - 1}>
           下一页
         </button>
-        <button onClick={() => setScale(prev => Math.min(prev + 0.1, 3))}>
-          放大
-        </button>
-        <button onClick={() => setScale(prev => Math.max(prev - 0.1, 0.5))}>
-          缩小
-        </button>
-        <button onClick={resetView}>
+        <button onClick={() => navigationController('reset')}>
           重置
         </button>
-        <button onClick={() => setIsRightToLeft(prev => !prev)}>
-          {isRightToLeft ? '从左到右' : '从右到左'}
+        <button onClick={() => navigationController('rotateLeft')}>
+          向左旋转
         </button>
+        <button onClick={() => navigationController('rotateRight')}>
+          向右旋转
+        </button>
+
         <span className="image-info">
           {currentImage.width}x{currentImage.height}px · {(currentImage.size / 1024).toFixed(1)}KB
         </span>
@@ -195,16 +145,26 @@ export default function FullscreenReader({ images, initialIndex, onClose }: Full
         </button>
       </div>
 
-      <div className="image-container">
+      <div 
+        className="image-container"
+        onClick={() => navigationController('next')}
+        onContextMenu={(e) => {
+          e.preventDefault();
+          navigationController('prev');
+        }}
+      >
         <img
           src={currentImage.url}
           alt={currentImage.name}
           style={{
-            transform: `translate(${position.x}px, ${position.y}px) scale(${scale})`,
-            cursor: isDragging ? 'grabbing' : 'grab'
+            transform: `rotate(${rotation}deg)`,
+            maxWidth: '100%',
+            maxHeight: '100%',
+            objectFit: 'contain',
+            transformOrigin: 'center center',
+            transition: 'transform 0.3s ease'
           }}
           draggable="false"
-          onMouseDown={handleMouseDown}
         />
       </div>
     </div>
