@@ -1,18 +1,42 @@
-import { useState, ChangeEvent } from 'react'
+import { useState, ChangeEvent, useEffect } from 'react'
 import './App.css'
+import './styles/theme.css'
 import FullscreenReader from './components/FullscreenReader'
+import { MdLightMode, MdDarkMode } from 'react-icons/md'
 
 interface ImageFile {
   name: string;
   url: string;
   size: number;
-  width?: number;
-  height?: number;
+  width: number;
+  height: number;
 }
 
 function App() {
   const [images, setImages] = useState<ImageFile[]>([]);
   const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null);
+  const [theme, setTheme] = useState(() => {
+    const savedTheme = localStorage.getItem('theme');
+    return savedTheme || 'light';
+  });
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('theme', theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme(prevTheme => prevTheme === 'light' ? 'dark' : 'light');
+  };
+
+  // 组件卸载时清理所有图片 URL
+  useEffect(() => {
+    return () => {
+      images.forEach(image => {
+        URL.revokeObjectURL(image.url);
+      });
+    };
+  }, [images]);
 
   const handleFolderSelect = async (e: ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -22,34 +46,48 @@ function App() {
     for (const file of files) {
       if (file.type.startsWith('image/')) {
         const url = URL.createObjectURL(file);
-        const imageFile: ImageFile = {
-          name: file.name,
-          url: url,
-          size: file.size
-        };
-
-        // 获取图片的宽度和高度
         const img = new Image();
-        img.onload = () => {
-          imageFile.width = img.width;
-          imageFile.height = img.height;
-          // 强制更新状态以反映新的宽高信息
-          setImages(prev => [...prev]);
-        };
-        img.src = url;
-
+        const imageFile = await new Promise<ImageFile>((resolve) => {
+          img.onload = () => {
+            resolve({
+              name: file.name,
+              url: url,
+              size: file.size,
+              width: img.naturalWidth,
+              height: img.naturalHeight
+            });
+          };
+          img.src = url;
+        });
         imageFiles.push(imageFile);
       }
     }
 
     // 按文件名排序
     imageFiles.sort((a, b) => a.name.localeCompare(b.name));
+    
+    // 清理旧的图片 URL
+    images.forEach(image => {
+      URL.revokeObjectURL(image.url);
+    });
+    
     setImages(imageFiles);
   };
 
   return (
     <div className="app">
+      <footer className="footer">
+        Powered by React
+      </footer>
       <div className="toolbar">
+        <button
+          className="theme-toggle"
+          onClick={toggleTheme}
+          aria-label="切换主题"
+        >
+          {theme === 'light' ? <MdDarkMode /> : <MdLightMode />}
+          {theme === 'light' ? '深色模式' : '浅色模式'}
+        </button>
         <input
           {...{
             type: "file",
