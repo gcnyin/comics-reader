@@ -1,41 +1,41 @@
 :root {
   /* 浅色模式（默认） */
-  --background-color: #f5f6fa;
-  --text-color: #34495e;
-  --toolbar-bg: #e6e9f0;
-  --toolbar-border: #d1d8e6;
-  --footer-bg: #e6e9f0;
-  --footer-text: #6c7a89;
-  --footer-border: #d1d8e6;
+  --background-color: #ffffff;
+  --text-color: #333333;
+  --toolbar-bg: #f8fafc;
+  --toolbar-border: #e2e8f0;
+  --footer-bg: #f5f5f5;
+  --footer-text: #666666;
+  --footer-border: #dddddd;
   --card-bg: #ffffff;
-  --card-shadow: rgba(108, 92, 231, 0.15);
-  --card-hover-shadow: rgba(108, 92, 231, 0.3);
-  --image-name-bg: #e6e9f0;
-  --reader-bg: rgba(245, 246, 250, 0.95);
-  --reader-controls-bg: rgba(230, 233, 240, 0.9);
-  --reader-text: #34495e;
-  --button-bg: #6c5ce7;
-  --button-hover-bg: #5641e5;
+  --card-shadow: rgba(0, 0, 0, 0.1);
+  --card-hover-shadow: rgba(0, 0, 0, 0.2);
+  --image-name-bg: #f5f5f5;
+  --reader-bg: rgba(0, 0, 0, 0.9);
+  --reader-controls-bg: rgba(0, 0, 0, 0.7);
+  --reader-text: #ffffff;
+  --button-bg: #4a4a4a;
+  --button-hover-bg: #666666;
   --button-text: #ffffff;
 }
 
 [data-theme="dark"] {
   /* 深色模式 */
-  --background-color: #17181f;
-  --text-color: #f8f9fa;
-  --toolbar-bg: #252730;
-  --toolbar-border: #2f3242;
-  --footer-bg: #252730;
-  --footer-text: #9ca3af;
-  --footer-border: #2f3242;
-  --card-bg: #252730;
-  --card-shadow: rgba(108, 92, 231, 0.3);
-  --card-hover-shadow: rgba(108, 92, 231, 0.5);
-  --image-name-bg: #252730;
-  --reader-bg: rgba(23, 24, 31, 0.95);
-  --reader-controls-bg: rgba(23, 24, 31, 0.8);
-  --reader-text: #f8f9fa;
-  --button-bg: #6c5ce7;
-  --button-hover-bg: #5641e5;
+  --background-color: #1a1a1a;
+  --text-color: #ffffff;
+  --toolbar-bg: #2d2d2d;
+  --toolbar-border: #404040;
+  --footer-bg: #2d2d2d;
+  --footer-text: #a0a0a0;
+  --footer-border: #404040;
+  --card-bg: #2d2d2d;
+  --card-shadow: rgba(0, 0, 0, 0.3);
+  --card-hover-shadow: rgba(0, 0, 0, 0.4);
+  --image-name-bg: #333333;
+  --reader-bg: rgba(0, 0, 0, 0.95);
+  --reader-controls-bg: rgba(0, 0, 0, 0.8);
+  --reader-text: #ffffff;
+  --button-bg: #4a4a4a;
+  --button-hover-bg: #666666;
   --button-text: #ffffff;
 }
