@@ -1,12 +1,16 @@
 /* 全局字体设置 - 使用非衬线字体 */
 * {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  font-family:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu,
+    Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
 body {
   background-color: var(--background-color);
   color: var(--text-color);
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition:
+    background-color var(--transition-duration) ease,
+    color var(--transition-duration) ease;
 }
 
 .app {
@@ -14,6 +18,8 @@ body {
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
+  background-color: var(--card-bg);
+  border-radius: var(--border-radius);
 }
 
 .toolbar {
@@ -24,27 +30,16 @@ body {
   display: flex;
   align-items: center;
   gap: 1rem;
+  box-shadow: 0 2px 4px var(--card-shadow);
+  transition: background-color var(--transition-duration) ease;
 }
 
 .image-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
   gap: 1rem;
   margin-top: 2rem;
   margin-bottom: 60px;
-}
-
-.footer {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  background-color: var(--footer-bg);
-  text-align: center;
-  padding: 1rem;
-  font-size: 0.9rem;
-  color: var(--footer-text);
-  border-top: 1px solid var(--footer-border);
 }
 
 .image-item {
@@ -52,7 +47,9 @@ body {
   overflow: hidden;
   background-color: var(--card-bg);
   box-shadow: 0 2px 8px var(--card-shadow);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
   cursor: pointer;
 }
 
@@ -63,7 +60,7 @@ body {
 
 .image-item img {
   width: 100%;
-  height: 200px;
+  height: 150px;
   object-fit: cover;
 }
 
@@ -88,6 +85,48 @@ body {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+}
+
+.file-select-button {
+  background-color: var(--button-bg);
+  color: var(--button-text);
+  border: none;
+  border-radius: 4px;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  display: inline-block; /* 使 label 可以设置 padding */
+}
+
+.file-select-button:hover {
+  background-color: var(--button-hover-bg);
+}
+
+.drop-zone {
+  border: 2px dashed var(--border-color);
+  border-radius: var(--border-radius);
+  padding: 2rem;
+  text-align: center;
+  transition:
+    border-color 0.3s ease,
+    background-color 0.3s ease;
+  margin-top: 1rem;
+}
+
+.drop-zone.drag-over {
+  border-color: var(--accent-color);
+  background-color: var(--drag-over-bg);
+}
+
+.loading {
+  margin-top: 1rem;
+  font-style: italic;
+  color: var(--text-color-secondary);
+}
+
+.error {
+  margin-top: 1rem;
+  color: var(--error-color);
 }
 
 .theme-toggle:hover {

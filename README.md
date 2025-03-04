@@ -18,22 +18,26 @@
 ## 快速开始
 
 1. 克隆项目
+
 ```bash
 git clone https://github.com/gcnyin/comics-reader.git
 cd comics-reader
 ```
 
 2. 安装依赖
+
 ```bash
 pnpm install
 ```
 
 3. 启动开发服务器
+
 ```bash
 pnpm dev
 ```
 
 4. 构建生产版本
+
 ```bash
 pnpm build
 ```
